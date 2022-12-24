@@ -9,34 +9,17 @@ export default class ClockViewCanvas {
         this.ctx = this.canvas.getContext('2d');
         this.template.append(this.canvas);
         this.generateTemplate();
+        this.controller.startClickHandler(this.generateTemplate.bind(this));
     }
-    createButtons() {
-        const buttons = [{ text: 'Start', x: 0, y: 0 }, { text: 'Stop', x: 35, y: 0 }];
-        buttons.forEach((item) => {
-            this.ctx.strokeStyle = 'black';
-            this.ctx.fillStyle = 'white';
-            this.ctx.fillRect(item.x, item.y, 33, 20);
-            this.ctx.font = '14px sans-serif';
-            this.ctx.fillStyle = 'black';
-            this.ctx.fillText(item.text, item.x, 10);
-        })
-        this.canvas.addEventListener('click', (event) => {
-            const x = event.offsetX;
-            const y = event.offsetY;
-
-            if (x >= 0 && x <= 35 && y >= 0 && y <= 10) {
-                this.controller.startClickHandler(this.generateTemplate.bind(this))
-            } else if (x >= 37 && x <= 70 && y >= 0 && y <= 10) {
-                this.controller.stopClickHandler(this.generateTemplate.bind(this))
-            }
-        })
-    }
+    
     generateTemplate() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        this.createButtons();
+        
         this.ctx.fillText(this.controller.curentTown, 80, 10);
         this.createClockFace();
+        this.createClockElectronic();
         this.createArrows();
+
     }
     createClockFace() {
         this.ctx.beginPath();
@@ -73,6 +56,16 @@ export default class ClockViewCanvas {
             this.ctx.rotate(-(item.deg * Math.PI / 180))
         })
         this.ctx.translate(-100, -120);
+    }
+    createClockElectronic (){
+        this.ctx.strokeStyle = 'black';
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(75, 150, 60, 20);
+        this.controller.hour;
+        this.controller.min;
+        this.controller.sec;
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillText(`${this.controller.hour}:${this.controller.min}:${this.controller.sec}`, 75, 165)
     }
     render() {
         document.querySelector('#clock').append(this.template);
